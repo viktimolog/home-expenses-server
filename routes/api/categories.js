@@ -79,7 +79,7 @@ router.delete('/delCategory/:id', (req, res) => {
 // @route   Update api/categories/:id
 // @desc    Update category
 // @access  Public
-//POSTMAN bad
+//POSTMAN OK
 //PUT http://localhost:5000/api/categories/updateCategory/5b5447357f58b21cae12e5d6
 // _id 5b5447357f58b21cae12e5d6
 // name Category 1 update
@@ -101,9 +101,9 @@ router.put('/updateCategory/:id', (req, res) => {
                 Category.findById(req.params.id)
                     .then(category => {
                         category.name = req.body.name;
-                        category.rating = req.body.birthday;
-                        category.parent = req.body.position;
-                        category.child = req.body.salary;
+                        category.rating = req.body.rating;
+                        category.parent = req.body.parent;
+                        category.child = req.body.child;
 
                         category.save().then(category => {
                             if (category) {
