@@ -18,7 +18,6 @@ router.get('/test', (req, res) => res.json({
 //POSTMAN OK http://localhost:5000/api/subCategories/getSubCategories
 router.get('/getSubCategories', (req, res) => {
     SubCategory.find()
-        .sort({ name: 1 })
         .then(subCategories => res.json(subCategories))
         .catch(err => res.status(404).json({ nosubCategoriesfound: 'No subCategories found' }));
 });
@@ -34,7 +33,6 @@ router.get('/getSubCategories', (req, res) => {
 router.post('/addSubCategory', (req, res) => {
     SubCategory.findOne({
         idCategory: req.body.idCategory,
-        name: req.body.name,
         rating: req.body.rating,
         idParent: req.body.idParent
     })
@@ -46,7 +44,6 @@ router.post('/addSubCategory', (req, res) => {
             } else {
                 const newCategory = new SubCategory({
                     idCategory: req.body.idCategory,
-                    name: req.body.name,
                     rating: req.body.rating,
                     idParent: req.body.idParent
                 });
@@ -86,7 +83,7 @@ router.delete('/delSubCategory/:id', (req, res) => {
 //POSTMAN OK
 //PUT http://localhost:5000/api/subCategories/updateSubCategory/5b545bcbbd3c5727d7796d7c
 // _id 5b545bcbbd3c5727d7796d7c
-// name Category 2 update
+// name Category 2 update - deleted
 // rating 2
 // idParent 5b5447357f58b21cae12e5d7
 // idCategory 5b5447357f58b21cae12e5d6
@@ -94,7 +91,6 @@ router.delete('/delSubCategory/:id', (req, res) => {
 router.put('/updateSubCategory/:id', (req, res) => {
     SubCategory.findOne({
         idCategory: req.body.idCategory,
-        name: req.body.name,
         rating: req.body.rating,
         idParent: req.body.idParent
     })
@@ -105,7 +101,6 @@ router.put('/updateSubCategory/:id', (req, res) => {
                 SubCategory.findById(req.params.id)
                     .then(category => {
                         category.idCategory = req.body.idCategory;
-                        category.name = req.body.name;
                         category.rating = req.body.rating;
                         category.idParent = req.body.idParent;
 
