@@ -26,7 +26,11 @@ router.get('/getCategories', (req, res) => {
 // @route  POST api/categories/addCategory
 // @desc   addCategory
 // @access Public
-//POSTMAN OK
+//POSTMAN http://localhost:5000/api/categories/addCategory OK
+// name Category 2
+// rating 2
+// parent false
+// child false
 router.post('/addCategory', (req, res) => {
     Category.findOne({
         name: req.body.name,

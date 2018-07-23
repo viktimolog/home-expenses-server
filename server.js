@@ -1,5 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bodyParcer = require('body-parser');
 
 const users = require('./routes/api/users');
@@ -27,19 +28,7 @@ mongoose
 const path = require('path')
 const port = process.env.PORT || 5000
 
-
-
-
-
-// const workers = require('./routes/api/workers');
-//
-//
-//
-
-//
-//
-
-
+app.use(cors());
 app.get('/', (req, res) => res
     .send('This server was created for...'))
 
