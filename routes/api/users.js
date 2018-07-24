@@ -23,6 +23,10 @@ router.get('/test', (req, res) => res.json({
 // @route   POST api/users/register
 // @desc    Register user
 // @access  Public
+//POSTMAN OK
+//email test1@test.net
+//password test1@test.net
+//password2 test1@test.net
 router.post('/register', (req, res) => {
     const { errors, isValid } = validateRegisterInput(req.body);
 
@@ -89,7 +93,11 @@ router.post('/login', (req, res) => {
         bcrypt.compare(password, user.password).then(isMatch => {
             if (isMatch) {
                 // User Matched
-                const payload = { id: user.id, email: email, avatar: user.avatar }; // Create JWT Payload
+                const payload = {
+                    id: user.id,
+                    email: email,
+                    avatar: user.avatar
+                }; // Create JWT Payload
 
                 // Sign Token
                 jwt.sign(
