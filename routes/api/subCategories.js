@@ -106,13 +106,16 @@ router.put('/updateSubCategory/:id', (req, res) => {
 
                         category.save().then(category => {
                             if (category) {
+
+                                //todo
+
                                 res.json({ success: true });
                                 category.json(category)
                             } else
                                 return res.status(400).json({ msg: 'Error on the server! SubCategory has not edited' });
                         });
                     })
-                    .catch(err => res.status(404).json({ categorynotfound: 'No subCategory found' }));
+                    .catch(err => res.status(404).json({ subcategorynotfound: 'No subCategory found' }));
             }
         })
 })

@@ -2,8 +2,37 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 const Category = require('../../models/Category');
+const User = require('../../models/User');
+
+//old
+router.delete('/delCategory1/:id', (req, res) => {
+        Category.findById(req.params.id)
+            .then(category => {
+                // Delete
+                category.remove().then(() => res.json({ success: true }));
+            })
+            .catch(err => res.status(404).json({ categorynotfound: 'No category found' }));
+    }
+);
+
+// @route   DELETE api/categories/:id
+// @desc    Delete category
+// @access  Public
+//POSTMAN http://localhost:5000/api/categories/delCategory/5b5447757f58b21cae12e5d8 OK
+router.delete('/delCategory/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        Category.findById(req.params.id)
+            .then(category => {
+                // Delete
+                category.remove().then(() => res.json({success: true}));
+            })
+            .catch(err => res.status(404).json({categorynotfound: 'No category found'}));
+    }
+)
 
 // @route   GET api/categories/test
 // @desc    Tests categories route
@@ -65,20 +94,6 @@ router.post('/addCategory', (req, res) => {
             }
         })
 })
-
-// @route   DELETE api/categories/:id
-// @desc    Delete category
-// @access  Public
-//POSTMAN http://localhost:5000/api/categories/delCategory/5b5447757f58b21cae12e5d8 OK
-router.delete('/delCategory/:id', (req, res) => {
-    Category.findById(req.params.id)
-            .then(category => {
-                // Delete
-                category.remove().then(() => res.json({ success: true }));
-            })
-            .catch(err => res.status(404).json({ categorynotfound: 'No category found' }));
-    }
-);
 
 // @route   Update api/categories/:id
 // @desc    Update category
