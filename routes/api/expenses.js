@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 const Expense = require('../../models/Expense');
 
@@ -17,7 +18,9 @@ router.get('/test', (req, res) => res.json({
 // @desc    Get expenses
 // @access  Public
 //POSTMAN OK http://localhost:5000/api/expenses/getExpenses
-router.get('/getExpenses', (req, res) => {
+router.get('/getExpenses',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Expense.find()
         .then(expenses => res.json(expenses))
         .catch(err => res.status(404).json({noexpensesfound: 'No expenses found'}));
@@ -33,7 +36,9 @@ router.get('/getExpenses', (req, res) => {
 // valueUAH: 10.25
 //idCategory: 5b5447357f58b21cae12e5d6
 
-router.post('/addExpense', (req, res) => {
+router.post('/addExpense',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Expense.findOne({
         date: req.body.date,
         category: req.body.category,
@@ -82,7 +87,9 @@ router.post('/addExpense', (req, res) => {
 //valueUAH 12345.98
 //idCategory 5b557d539385ce1c4f3337c8
 
-router.put('/updateExpense/:id', (req, res) => {
+router.put('/updateExpense/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Expense.findOne({
         date: req.body.date,
         category: req.body.category,

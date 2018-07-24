@@ -56,7 +56,6 @@ router.get('/getCategories',
 // parent false
 // child false
 
-//do not work
 router.post('/addCategory',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {

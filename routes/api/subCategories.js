@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
+const passport = require('passport');
 
 const SubCategory = require('../../models/SubCategory');
 
@@ -16,7 +17,9 @@ router.get('/test', (req, res) => res.json({
 // @desc    Get subCategories
 // @access  Public
 //POSTMAN OK http://localhost:5000/api/subCategories/getSubCategories
-router.get('/getSubCategories', (req, res) => {
+router.get('/getSubCategories',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     SubCategory.find()
         .then(subCategories => res.json(subCategories))
         .catch(err => res.status(404).json({ nosubCategoriesfound: 'No subCategories found' }));
@@ -30,7 +33,9 @@ router.get('/getSubCategories', (req, res) => {
 // name Category 2
 // rating 1
 // idParent 5b5447357f58b21cae12e5d7
-router.post('/addSubCategory', (req, res) => {
+router.post('/addSubCategory',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     SubCategory.findOne({
         idCategory: req.body.idCategory,
         rating: req.body.rating,
@@ -67,7 +72,9 @@ router.post('/addSubCategory', (req, res) => {
 // @desc    Delete subCategory
 // @access  Public
 //POSTMAN OK http://localhost:5000/api/subCategories/delSubCategory/5b545a40b7abd6276d32f1d9
-router.delete('/delSubCategory/:id', (req, res) => {
+router.delete('/delSubCategory/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     SubCategory.findById(req.params.id)
             .then(category => {
                 // Delete
@@ -88,7 +95,9 @@ router.delete('/delSubCategory/:id', (req, res) => {
 // idParent 5b5447357f58b21cae12e5d7
 // idCategory 5b5447357f58b21cae12e5d6
 
-router.put('/updateSubCategory/:id', (req, res) => {
+router.put('/updateSubCategory/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     SubCategory.findOne({
         idCategory: req.body.idCategory,
         rating: req.body.rating,
