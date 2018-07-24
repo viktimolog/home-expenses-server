@@ -32,20 +32,15 @@ router.delete('/delCategory/:id',
             })
             .catch(err => res.status(404).json({categorynotfound: 'No category found'}));
     }
-)
-
-// @route   GET api/categories/test
-// @desc    Tests categories route
-// @access  Public
-router.get('/test', (req, res) => res.json({
-    msg: "Categories works"
-}));
+);
 
 // @route   GET api/categories
 // @desc    Get categories
 // @access  Public
 //POSTMAN OK http://localhost:5000/api/categories/getCategories
-router.get('/getCategories', (req, res) => {
+router.get('/getCategories',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Category.find()
         .sort({ name: 1 })
         .then(categories => res.json(categories))
@@ -60,7 +55,11 @@ router.get('/getCategories', (req, res) => {
 // rating 2
 // parent false
 // child false
-router.post('/addCategory', (req, res) => {
+
+//do not work
+router.post('/addCategory',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Category.findOne({
         name: req.body.name,
         rating: req.body.rating,
@@ -95,6 +94,13 @@ router.post('/addCategory', (req, res) => {
         })
 })
 
+// @route   GET api/categories/test
+// @desc    Tests categories route
+// @access  Public
+router.get('/test', (req, res) => res.json({
+    msg: "Categories works"
+}));
+
 // @route   Update api/categories/:id
 // @desc    Update category
 // @access  Public
@@ -106,7 +112,9 @@ router.post('/addCategory', (req, res) => {
 // parent false
 // child true
 
-router.put('/updateCategory/:id', (req, res) => {
+router.put('/updateCategory/:id',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
     Category.findOne({
         name: req.body.name,
         rating: req.body.rating,
