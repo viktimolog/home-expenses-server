@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 //create Schema
 const ExpenseSchema = new Schema({
+    idUser: {
+        type: String,
+        required: true
+    },
     date: {
         type: Number,
         required: true

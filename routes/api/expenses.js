@@ -3,6 +3,7 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const jwt_decode = require('jwt-decode');
 
 const Expense = require('../../models/Expense');
 
@@ -21,7 +22,11 @@ router.get('/test', (req, res) => res.json({
 router.get('/getExpenses',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
+        var token  = req.headers.authorization.substring(7);//del 'Bearer '
+        decodedToken = jwt_decode(token);
+        var idUser = decodedToken.id;
     Expense.find()
+        .then(expenses => expenses.filter(exp => exp.idUser === idUser))
         .then(expenses => res.json(expenses))
         .catch(err => res.status(404).json({noexpensesfound: 'No expenses found'}));
 });
@@ -40,6 +45,7 @@ router.post('/addExpense',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
     Expense.findOne({
+        idUser: req.body.idUser,
         date: req.body.date,
         category: req.body.category,
         expense: req.body.expense,
@@ -53,6 +59,7 @@ router.post('/addExpense',
                 });
             } else {
                 const newExpense = new Expense({
+                    idUser: req.body.idUser,
                     date: req.body.date,
                     category: req.body.category,
                     expense: req.body.expense,

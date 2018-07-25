@@ -3,6 +3,7 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const jwt_decode = require('jwt-decode');
 
 const Category = require('../../models/Category');
 const User = require('../../models/User');
@@ -34,6 +35,21 @@ router.delete('/delCategory/:id',
     }
 );
 
+// server.route('/userdata')
+// // get user data
+//     .get(passport.authenticate('jwt', {session: false}), (req, res)=>{
+//         res.json(req.user)
+//     })
+//
+// router.get('/getCategories',
+//     passport.authenticate('jwt', { session: false }),
+//     (req, res) => {
+//         Category.find()
+//             .sort({ name: 1 })
+//             .then(categories => res.json(categories))
+//             .catch(err => res.status(404).json({ nocategoriesfound: 'No categories found' }));
+//     });
+
 // @route   GET api/categories
 // @desc    Get categories
 // @access  Public
@@ -41,8 +57,18 @@ router.delete('/delCategory/:id',
 router.get('/getCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
+    // console.log(req.headers)
+        var token  = req.headers.authorization.substring(7);//del 'Bearer '
+        // console.log(token)//ok
+
+        decodedToken = jwt_decode(token);
+        var idUser = decodedToken.id;
+        // console.log('decodedToken',decodedToken)//ok
+        // console.log('decodedToken.id',decodedToken.id)//ok
+
     Category.find()
         .sort({ name: 1 })
+        .then(categories => categories.filter(cat => cat.idUser === idUser))
         .then(categories => res.json(categories))
         .catch(err => res.status(404).json({ nocategoriesfound: 'No categories found' }));
 });
@@ -60,6 +86,7 @@ router.post('/addCategory',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
     Category.findOne({
+        idUser: req.body.idUser,
         name: req.body.name,
         rating: req.body.rating,
         parent: req.body.parent,
@@ -72,6 +99,7 @@ router.post('/addCategory',
                 });
             } else {
                 const newCategory = new Category({
+                    idUser: req.body.idUser,
                     name: req.body.name,
                     rating: req.body.rating,
                     parent: req.body.parent,

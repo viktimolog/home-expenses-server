@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 //create Schema
 const CategorySchema = new Schema({
+    idUser: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: false

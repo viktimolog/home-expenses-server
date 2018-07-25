@@ -3,6 +3,7 @@ const router = express.Router();
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const jwt_decode = require('jwt-decode');
 
 const SubCategory = require('../../models/SubCategory');
 
@@ -20,7 +21,11 @@ router.get('/test', (req, res) => res.json({
 router.get('/getSubCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
+        var token  = req.headers.authorization.substring(7);//del 'Bearer '
+        decodedToken = jwt_decode(token);
+        var idUser = decodedToken.id;
     SubCategory.find()
+        .then(subCategories => subCategories.filter(subCat => subCat.idUser === idUser))
         .then(subCategories => res.json(subCategories))
         .catch(err => res.status(404).json({ nosubCategoriesfound: 'No subCategories found' }));
 });
@@ -37,6 +42,7 @@ router.post('/addSubCategory',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
     SubCategory.findOne({
+        idUser: req.body.idUser,
         idCategory: req.body.idCategory,
         rating: req.body.rating,
         idParent: req.body.idParent
@@ -48,6 +54,7 @@ router.post('/addSubCategory',
                 });
             } else {
                 const newCategory = new SubCategory({
+                    idUser: req.body.idUser,
                     idCategory: req.body.idCategory,
                     rating: req.body.rating,
                     idParent: req.body.idParent
