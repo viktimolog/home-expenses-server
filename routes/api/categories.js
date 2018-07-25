@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const jwt_decode = require('jwt-decode');
 
 const Category = require('../../models/Category');
-const User = require('../../models/User');
 
 //old
 router.delete('/delCategory1/:id', (req, res) => {
@@ -35,21 +32,6 @@ router.delete('/delCategory/:id',
     }
 );
 
-// server.route('/userdata')
-// // get user data
-//     .get(passport.authenticate('jwt', {session: false}), (req, res)=>{
-//         res.json(req.user)
-//     })
-//
-// router.get('/getCategories',
-//     passport.authenticate('jwt', { session: false }),
-//     (req, res) => {
-//         Category.find()
-//             .sort({ name: 1 })
-//             .then(categories => res.json(categories))
-//             .catch(err => res.status(404).json({ nocategoriesfound: 'No categories found' }));
-//     });
-
 // @route   GET api/categories
 // @desc    Get categories
 // @access  Public
@@ -58,11 +40,11 @@ router.get('/getCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
     // console.log(req.headers)
-        var token  = req.headers.authorization.substring(7);//del 'Bearer '
+        let token  = req.headers.authorization.substring(7);//del 'Bearer '
         // console.log(token)//ok
 
         decodedToken = jwt_decode(token);
-        var idUser = decodedToken.id;
+        let idUser = decodedToken.id;
         // console.log('decodedToken',decodedToken)//ok
         // console.log('decodedToken.id',decodedToken.id)//ok
 

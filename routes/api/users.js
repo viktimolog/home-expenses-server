@@ -39,7 +39,9 @@ router.post('/register', (req, res) => {
         if (user) {
             errors.email = 'Email already exists';
             return res.status(400).json(errors);
-        } else {
+        }
+
+        else {
             const avatar = gravatar.url(req.body.email, {
                 s: '200', // Size
                 r: 'pg', // Rating
@@ -47,6 +49,8 @@ router.post('/register', (req, res) => {
             });
 
             const newUser = new User({
+                verifyKey: String(Date.now()),
+                validation: false,
                 email: req.body.email,
                 avatar,
                 password: req.body.password
@@ -60,8 +64,67 @@ router.post('/register', (req, res) => {
                         .save()
                         .then(user => res.json(user))
                         .catch(err => console.log(err));
+
+                    const path = `http://localhost:3000/emailverification/${newUser.email}/${newUser.verifyKey}`
+
+                    console.log(path)
                 });
             });
+
+        }//else end
+    });
+});
+
+// @route   GET api/users/verify
+// @desc    Verify User / Returning JWT Token
+// @access  Public
+router.post('/verify', (req, res) => {
+
+    // console.log('it is post(/verify')//ok
+
+    console.log('req.body.email = ',req.body.email)
+    console.log('req.body.verifyKey = ',req.body.verifyKey)
+
+    const email = req.body.email;
+    const verifyKey = req.body.verifyKey;
+
+    // Find user by email
+    User.findOne({ email }).then(user => {
+        // Check for user
+        if (!user) {
+            errors.email = 'User not found';
+            console.log('User not found')
+            return res.status(404).json(errors);
+        }
+
+        if(verifyKey === user.verifyKey) {
+
+            console.log('User has found!!!')
+
+            user.validation = true;
+            user.save()
+
+            console.log('user after save = ',user)
+
+            const payload = {
+                id: user.id,
+                email: email,
+                avatar: user.avatar
+            }; // Create JWT Payload
+
+            // Sign Token
+            jwt.sign(
+                payload,
+                keys.secretOrKey,
+                {expiresIn: 3600},
+                (err, token) => {
+                    res.json({
+                        success: true,
+                        token: token,
+                        payload: payload
+                    });
+                }
+            );
         }
     });
 });
@@ -86,37 +149,42 @@ router.post('/login', (req, res) => {
         if (!user) {
             errors.email = 'User not found';
             return res.status(404).json(errors);
-            // return res.status(404).json({email: 'User not found'});
         }
 
-        // Check Password
-        bcrypt.compare(password, user.password).then(isMatch => {
-            if (isMatch) {
-                // User Matched
-                const payload = {
-                    id: user.id,
-                    email: email,
-                    avatar: user.avatar
-                }; // Create JWT Payload
+        if(user.validation) {
 
-                // Sign Token
-                jwt.sign(
-                    payload,
-                    keys.secretOrKey,
-                    { expiresIn: 3600 },
-                    (err, token) => {
-                        res.json({
-                            success: true,
-                            token: token,
-                            payload: payload
-                        });
-                    }
-                );
-            } else {
-                errors.password = 'Password incorrect';
-                return res.status(400).json(errors);
-            }
-        });
+            // Check Password
+            bcrypt.compare(password, user.password).then(isMatch => {
+                if (isMatch) {
+                    // User Matched
+                    const payload = {
+                        id: user.id,
+                        email: email,
+                        avatar: user.avatar
+                    }; // Create JWT Payload
+
+                    // Sign Token
+                    jwt.sign(
+                        payload,
+                        keys.secretOrKey,
+                        {expiresIn: 3600},
+                        (err, token) => {
+                            res.json({
+                                success: true,
+                                token: token,
+                                payload: payload
+                            });
+                        }
+                    );
+                } else {
+                    errors.password = 'Password incorrect';
+                    return res.status(400).json(errors);
+                }
+            });
+        }//end if(validation)
+        else{
+            return res.status(404).json(errors)
+        }
     });
 });
 

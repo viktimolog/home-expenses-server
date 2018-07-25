@@ -3,6 +3,14 @@ const Schema = mongoose.Schema;
 
 //create Schema
 const UserSchema = new Schema({
+    verifyKey: {
+        type: String,
+        required: true
+    },
+    validation: {
+        type: Boolean,
+        required: true
+    },
     email: {
         type: String,
         required: true

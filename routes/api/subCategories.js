@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const gravatar = require('gravatar');
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const jwt_decode = require('jwt-decode');
 
@@ -21,9 +19,9 @@ router.get('/test', (req, res) => res.json({
 router.get('/getSubCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-        var token  = req.headers.authorization.substring(7);//del 'Bearer '
+        let token  = req.headers.authorization.substring(7);//del 'Bearer '
         decodedToken = jwt_decode(token);
-        var idUser = decodedToken.id;
+        let idUser = decodedToken.id;
     SubCategory.find()
         .then(subCategories => subCategories.filter(subCat => subCat.idUser === idUser))
         .then(subCategories => res.json(subCategories))
