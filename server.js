@@ -37,7 +37,7 @@ const port = process.env.PORT || 5000
 
 app.use(cors());
 app.get('/', (req, res) => res
-    .send('This server was created for...'))
+    .send('This server was created for https://github.com/viktimolog/home-expenses'))
 
 // Use Routes
 app.use('/api/users', users);
