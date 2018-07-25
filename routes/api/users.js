@@ -38,7 +38,11 @@ router.post('/register', (req, res) => {
     User.findOne({ email: req.body.email }).then(user => {
         if (user) {
             errors.email = 'Email already exists';
-            return res.status(400).json(errors);
+            // return res.status(400).json(errors);
+            return res.json({
+                success: false,
+                message: 'Email already exists'
+            });
         }
 
         else {
@@ -63,16 +67,32 @@ router.post('/register', (req, res) => {
                     newUser
                         .save()
                         .then(user => res.json(user))
-                        .catch(err => console.log(err));
+                        .catch(err =>
+                            res.json({
+                                success: false,
+                                message: err
+                            })
+                        )
 
                     const path = `http://localhost:3000/emailverification/${newUser.email}/${newUser.verifyKey}`
 
                     console.log(path)
+
+                    return res.json({
+                        success: true,
+                        message: 'Congratulation! Successful registration. Please, read the letter from us'
+                    });
                 });
             });
 
-        }//else end
-    });
+        }//else end .catch(err => console.log(err));
+    })
+        .catch(err =>
+            res.json({
+            success: false,
+            message: err
+            })
+        )
 });
 
 // @route   GET api/users/verify
