@@ -19,9 +19,9 @@ router.get('/test', (req, res) => res.json({
 router.get('/getSubCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-        let token  = req.headers.authorization.substring(7);//del 'Bearer '
-        decodedToken = jwt_decode(token);
-        let idUser = decodedToken.id;
+        const token  = req.headers.authorization.substring(7);//del 'Bearer '
+        const decodedToken = jwt_decode(token);
+        const idUser = decodedToken.id;
     SubCategory.find()
         .then(subCategories => subCategories.filter(subCat => subCat.idUser === idUser))
         .then(subCategories => res.json(subCategories))

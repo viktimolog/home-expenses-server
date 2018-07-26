@@ -20,9 +20,9 @@ router.get('/test', (req, res) => res.json({
 router.get('/getExpenses',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-        let token  = req.headers.authorization.substring(7);//del 'Bearer '
-        decodedToken = jwt_decode(token);
-        let idUser = decodedToken.id;
+        const token  = req.headers.authorization.substring(7);//del 'Bearer '
+        const decodedToken = jwt_decode(token);
+        const idUser = decodedToken.id;
     Expense.find()
         .then(expenses => expenses.filter(exp => exp.idUser === idUser))
         .then(expenses => res.json(expenses))

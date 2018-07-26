@@ -5,17 +5,6 @@ const jwt_decode = require('jwt-decode');
 
 const Category = require('../../models/Category');
 
-//old
-router.delete('/delCategory1/:id', (req, res) => {
-        Category.findById(req.params.id)
-            .then(category => {
-                // Delete
-                category.remove().then(() => res.json({ success: true }));
-            })
-            .catch(err => res.status(404).json({ categorynotfound: 'No category found' }));
-    }
-);
-
 // @route   DELETE api/categories/:id
 // @desc    Delete category
 // @access  Public
@@ -40,13 +29,13 @@ router.get('/getCategories',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
     // console.log(req.headers)
-        let token  = req.headers.authorization.substring(7);//del 'Bearer '
-        // console.log(token)//ok
+        const token  = req.headers.authorization.substring(7);//del 'Bearer '
+        // console.log('token = ', token)//ok
 
-        decodedToken = jwt_decode(token);
-        let idUser = decodedToken.id;
+        const decodedToken = jwt_decode(token);
+        const idUser = decodedToken.id;
         // console.log('decodedToken',decodedToken)//ok
-        // console.log('decodedToken.id',decodedToken.id)//ok
+        console.log('idUser = ',idUser)//?
 
     Category.find()
         .sort({ name: 1 })
@@ -63,7 +52,6 @@ router.get('/getCategories',
 // rating 2
 // parent false
 // child false
-
 router.post('/addCategory',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
@@ -120,7 +108,6 @@ router.get('/test', (req, res) => res.json({
 // rating 1
 // parent false
 // child true
-
 router.put('/updateCategory/:id',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {

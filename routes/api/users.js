@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys');
 const passport = require('passport');
+const jwt_decode = require('jwt-decode');
 
 // Load Input Validation
 const validateRegisterInput = require('../../validation/register');
@@ -95,7 +96,7 @@ router.post('/register', (req, res) => {
         )
 });
 
-// @route   GET api/users/verify
+// @route   POST api/users/verify
 // @desc    Verify User / Returning JWT Token
 // @access  Public
 router.post('/verify', (req, res) => {
@@ -137,7 +138,7 @@ router.post('/verify', (req, res) => {
     });
 });
 
-// @route   GET api/users/login
+// @route   POST api/users/login
 // @desc    Login User / Returning JWT Token
 // @access  Public
 router.post('/login', (req, res) => {
@@ -153,6 +154,7 @@ router.post('/login', (req, res) => {
 
     // Find user by email
     User.findOne({email}).then(user => {
+        console.log('User OK')
         // Check for user
         if (!user) {
             errors.email = 'User not found';
@@ -195,18 +197,32 @@ router.post('/login', (req, res) => {
     });
 });
 
-// @route   GET api/users/current
-// @desc    Return current user
-// @access  Private
-// router.get(
-//     '/current',
-//     passport.authenticate('jwt', {session: false}),
-//     (req, res) => {
-//         res.json({
-//             id: req.user.id,
-//             email: req.user.email
-//         });
-//     }
-// );
+// @route   POST api/users/current
+// @desc    getCurrentUser
+// @access  Public
+router.post('/token',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+
+    const token  = req.headers.authorization.substring(7);//del 'Bearer '
+
+        console.log(token)
+
+    const decodedToken = jwt_decode(token);
+
+        const payload = {
+            id: decodedToken.id,
+            email: decodedToken.email,
+            avatar: decodedToken.avatar
+        };
+
+        console.log('payload', payload)
+
+        return res.json({
+            success: true,
+            token: token,
+            payload: payload
+        })
+})
 
 module.exports = router;
