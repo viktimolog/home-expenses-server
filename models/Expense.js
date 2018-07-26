@@ -17,7 +17,7 @@ const ExpenseSchema = new Schema({
     },
     expense: {
         type: String,
-        required: true
+        required: false
     },
     valueUAH: {
         type: Number,

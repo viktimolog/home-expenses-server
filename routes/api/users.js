@@ -206,7 +206,7 @@ router.post('/token',
 
     const token  = req.headers.authorization.substring(7);//del 'Bearer '
 
-        console.log(token)
+        // console.log(token)
 
     const decodedToken = jwt_decode(token);
 
