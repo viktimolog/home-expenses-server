@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//create Schema//todo
+//create Schema
 const CategorySchema = new Schema({
     idUser: {
         type: String,
@@ -11,16 +11,20 @@ const CategorySchema = new Schema({
         type: String,
         required: false
     },
+    idParent: {
+        type: String,
+        required: true
+    },
+    isParent: {
+        type: Boolean,
+        required: true
+    },
+    isChild: {
+        type: Boolean,
+        required: true
+    },
     rating: {
         type: Number,
-        required: true
-    },
-    parent: {
-        type: Boolean,
-        required: true
-    },
-    child: {
-        type: Boolean,
         required: true
     }
 });
