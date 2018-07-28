@@ -25,7 +25,7 @@ const ExpenseSchema = new Schema({
     },
     idCategory: {
         type: String,
-        required: true
+        required: false
     },
 });
 
