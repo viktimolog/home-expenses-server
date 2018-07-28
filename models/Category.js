@@ -29,4 +29,4 @@ const CategorySchema = new Schema({
     }
 });
 
-module.exports = SubCategory = mongoose.model('categories', CategorySchema);
+module.exports = Category = mongoose.model('categories', CategorySchema);

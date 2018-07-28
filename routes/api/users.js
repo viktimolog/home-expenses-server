@@ -24,10 +24,6 @@ router.get('/test', (req, res) => res.json({
 // @route   POST api/users/register
 // @desc    Register user
 // @access  Public
-//POSTMAN OK
-//email test1@test.net
-//password test1@test.net
-//password2 test1@test.net
 router.post('/register', (req, res) => {
     const {errors, isValid} = validateRegisterInput(req.body);
 
@@ -39,7 +35,6 @@ router.post('/register', (req, res) => {
     User.findOne({email: req.body.email}).then(user => {
         if (user) {
             errors.email = 'Email already exists';
-            // return res.status(400).json(errors);
             return res.json({
                 success: false,
                 message: 'Email already exists'
@@ -201,28 +196,20 @@ router.post('/login', (req, res) => {
 // @desc    getCurrentUser
 // @access  Public
 router.post('/token',
-    passport.authenticate('jwt', { session: false }),
+    passport.authenticate('jwt', {session: false}),
     (req, res) => {
-
-    const token  = req.headers.authorization.substring(7);//del 'Bearer '
-
-        // console.log(token)
-
-    const decodedToken = jwt_decode(token);
-
+        const token = req.headers.authorization.substring(7);//del 'Bearer '
+        const decodedToken = jwt_decode(token);
         const payload = {
             id: decodedToken.id,
             email: decodedToken.email,
             avatar: decodedToken.avatar
         };
-
-        console.log('payload', payload)
-
         return res.json({
             success: true,
             token: token,
             payload: payload
         })
-})
+    })
 
 module.exports = router;
