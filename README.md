@@ -9,3 +9,5 @@ cd home-expenses-server
 Install all dependencies
 
 npm install or yarn install
+
+Run yarn start or npm start
