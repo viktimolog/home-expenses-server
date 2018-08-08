@@ -81,8 +81,8 @@ router.post('/register', (req, res) => {
             port: 25,
             secure: false,
             auth: {
-              user: 'viktimolog@gmail.com',
-              pass: '0402GoD19810402GoD1981'
+              user: '***@gmail.com',
+              pass: '***'
             },
             tls: {
               rejectUnauthorized: false
